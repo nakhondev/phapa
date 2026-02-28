@@ -58,7 +58,7 @@ export function LandingPage({ event }: LandingPageProps) {
     }).format(n);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-amber-50 via-white to-white font-[var(--font-prompt)]">
+    <div className="min-h-screen bg-gradient-to-b from-amber-50 via-white to-white font-[var(--font-sarabun)]">
 
       {/* ─── Ambient glow ─── */}
       <div className="pointer-events-none fixed inset-0 overflow-hidden">

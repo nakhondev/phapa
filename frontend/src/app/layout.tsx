@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Prompt, IBM_Plex_Sans_Thai } from "next/font/google";
+import { Prompt, IBM_Plex_Sans_Thai, Sarabun } from "next/font/google";
 import { Toast } from "@heroui/react";
 import { AuthProvider } from "@/components/AuthProvider";
 import "./globals.css";
@@ -18,6 +18,13 @@ const ibmPlex = IBM_Plex_Sans_Thai({
   display: "swap",
 });
 
+const sarabun = Sarabun({
+  variable: "--font-sarabun",
+  subsets: ["latin", "thai"],
+  weight: ["300", "400", "500", "600", "700", "800"],
+  display: "swap",
+});
+
 export const metadata: Metadata = {
   title: "ผ้าป่า — ระบบบริหารจัดการงานผ้าป่า",
   description: "ระบบบริหารจัดการงานผ้าป่าออนไลน์ ติดตามยอดบริจาคแบบ Realtime",
@@ -31,7 +38,7 @@ export default function RootLayout({
   return (
     <html lang="th" suppressHydrationWarning>
       <body
-        className={`${prompt.variable} ${ibmPlex.variable} antialiased`}
+        className={`${prompt.variable} ${ibmPlex.variable} ${sarabun.variable} antialiased`}
       >
         <Toast.Provider placement="top end" />
         <AuthProvider>{children}</AuthProvider>
