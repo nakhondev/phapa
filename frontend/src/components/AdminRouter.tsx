@@ -8,6 +8,7 @@ import { useAuth } from "@/lib/auth";
 import { api } from "@/lib/api";
 import { AdminDashboard } from "./AdminDashboard";
 import { LoginPage } from "./LoginPage";
+import { HomePage } from "./HomePage";
 import type { Event } from "@/lib/types";
 
 interface AdminRouterProps {
@@ -17,15 +18,11 @@ interface AdminRouterProps {
 export function AdminRouter({ eventId }: AdminRouterProps) {
   const { user, loading: authLoading } = useAuth();
   const [event, setEvent] = useState<Event | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(!!eventId);
   const [error, setError] = useState("");
 
   useEffect(() => {
-    if (!eventId) {
-      setError("กรุณาระบุ event ID");
-      setLoading(false);
-      return;
-    }
+    if (!eventId) return;
     api
       .getEvent(eventId)
       .then(setEvent)
@@ -45,6 +42,10 @@ export function AdminRouter({ eventId }: AdminRouterProps) {
     return <LoginPage />;
   }
 
+  if (!eventId) {
+    return <HomePage />;
+  }
+
   if (error || !event) {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center gap-4">
@@ -54,8 +55,8 @@ export function AdminRouter({ eventId }: AdminRouterProps) {
         <h1 className="text-xl font-bold text-gray-700">
           {error || "ไม่พบงานผ้าป่า"}
         </h1>
-        <Link href="/" className="text-sm font-medium text-gold-600 hover:underline">
-          กลับหน้าหลัก
+        <Link href="/admin" className="text-sm font-medium text-gold-600 hover:underline">
+          กลับหน้าจัดการ
         </Link>
       </div>
     );

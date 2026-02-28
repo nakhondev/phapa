@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Button, Card } from "@heroui/react";
+import { Button, Card, toast } from "@heroui/react";
 import { ClientSpinner } from "./ClientSpinner";
 import {
   Plus,
@@ -56,7 +56,7 @@ export function HomePage() {
       });
       setShowCreate(false);
     } catch {
-      alert("สร้างงานไม่สำเร็จ");
+      toast.danger("สร้างงานไม่สำเร็จ");
     } finally {
       setCreating(false);
     }

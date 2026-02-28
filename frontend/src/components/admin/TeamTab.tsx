@@ -8,6 +8,7 @@ import {
   TextField,
   Label,
   Input,
+  toast,
 } from "@heroui/react";
 import { ClientSpinner } from "../ClientSpinner";
 import { Plus, TrashBin, Person } from "@gravity-ui/icons";
@@ -95,10 +96,9 @@ export function TeamTab({ eventId }: TeamTabProps) {
 
   const handleDelete = async (id: string) => {
     if (id === user?.id) {
-      alert("ไม่สามารถลบตัวเองได้");
+      toast.warning("ไม่สามารถลบตัวเองได้");
       return;
     }
-    if (!confirm("ต้องการลบสมาชิกนี้? จะลบทั้งบัญชีผู้ใช้ด้วย")) return;
     setDeleting(id);
     try {
       await api.deleteTeamMember(id);

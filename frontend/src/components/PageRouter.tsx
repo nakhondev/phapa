@@ -6,7 +6,7 @@ import { ClientSpinner } from "./ClientSpinner";
 import { CircleInfo } from "@gravity-ui/icons";
 import { api } from "@/lib/api";
 import { LandingPage } from "./LandingPage";
-import { HomePage } from "./HomePage";
+import { PublicWelcomePage } from "./PublicWelcomePage";
 import type { Event } from "@/lib/types";
 
 interface PageRouterProps {
@@ -27,7 +27,7 @@ export function PageRouter({ eventId }: PageRouterProps) {
       .finally(() => setLoading(false));
   }, [eventId]);
 
-  if (!eventId) return <HomePage />;
+  if (!eventId) return <PublicWelcomePage />;
 
   if (loading) {
     return (

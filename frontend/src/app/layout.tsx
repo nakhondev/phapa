@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Prompt, IBM_Plex_Sans_Thai } from "next/font/google";
+import { Toast } from "@heroui/react";
 import { AuthProvider } from "@/components/AuthProvider";
 import "./globals.css";
 
@@ -32,6 +33,7 @@ export default function RootLayout({
       <body
         className={`${prompt.variable} ${ibmPlex.variable} antialiased`}
       >
+        <Toast.Provider placement="top end" />
         <AuthProvider>{children}</AuthProvider>
       </body>
     </html>

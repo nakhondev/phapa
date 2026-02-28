@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Button, Card, TextField, NumberField, Label, Input, Switch } from "@heroui/react";
+import { Button, Card, TextField, NumberField, Label, Input, Switch, toast } from "@heroui/react";
 import { Gear } from "@gravity-ui/icons";
 import { api } from "@/lib/api";
 import type { Event } from "@/lib/types";
@@ -19,17 +19,13 @@ export function SettingsTab({ event, onEventUpdate }: SettingsTabProps) {
   const [location, setLocation] = useState(event.location || "");
   const [isActive, setIsActive] = useState(event.is_active);
   const [saving, setSaving] = useState(false);
-  const [success, setSuccess] = useState(false);
-  const [error, setError] = useState("");
 
   const handleSave = async () => {
     if (!name.trim()) {
-      setError("กรุณากรอกชื่องาน");
+      toast.warning("กรุณากรอกชื่องาน");
       return;
     }
     setSaving(true);
-    setError("");
-    setSuccess(false);
     try {
       const updated = await api.updateEvent(event.id, {
         name: name.trim(),
@@ -40,10 +36,9 @@ export function SettingsTab({ event, onEventUpdate }: SettingsTabProps) {
         is_active: isActive,
       });
       onEventUpdate(updated);
-      setSuccess(true);
-      setTimeout(() => setSuccess(false), 3000);
+      toast.success("บันทึกสำเร็จ");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "บันทึกไม่สำเร็จ");
+      toast.danger(err instanceof Error ? err.message : "บันทึกไม่สำเร็จ");
     } finally {
       setSaving(false);
     }
@@ -64,17 +59,6 @@ export function SettingsTab({ event, onEventUpdate }: SettingsTabProps) {
           </div>
         </Card.Header>
         <Card.Content className="space-y-5">
-          {error && (
-            <div className="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-600">
-              {error}
-            </div>
-          )}
-          {success && (
-            <div className="rounded-lg bg-green-50 px-4 py-3 text-sm text-green-600">
-              บันทึกสำเร็จ
-            </div>
-          )}
-
           <TextField isRequired value={name} onChange={setName}>
             <Label>ชื่องาน</Label>
             <Input placeholder="ชื่องานผ้าป่า" />
