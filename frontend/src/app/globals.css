@@ -1,0 +1,61 @@
+@import "tailwindcss";
+@import "@heroui/styles";
+
+@theme inline {
+  --font-sans: var(--font-prompt), "Prompt", sans-serif;
+  --font-mono: var(--font-ibm-plex), "IBM Plex Sans Thai", sans-serif;
+
+  --color-gold-50: #fffdf5;
+  --color-gold-100: #fff9e0;
+  --color-gold-200: #fff0b8;
+  --color-gold-300: #ffe485;
+  --color-gold-400: #ffd54f;
+  --color-gold-500: #ffab00;
+  --color-gold-600: #e69500;
+  --color-gold-700: #b37400;
+  --color-gold-800: #805300;
+  --color-gold-900: #4d3200;
+
+  --color-saffron-50: #fff8f0;
+  --color-saffron-100: #ffedd5;
+  --color-saffron-500: #f97316;
+  --color-saffron-600: #ea580c;
+}
+
+@keyframes count-up {
+  from { opacity: 0; transform: translateY(20px) scale(0.95); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 20px rgba(255, 171, 0, 0.3); }
+  50% { box-shadow: 0 0 40px rgba(255, 171, 0, 0.6); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.animate-count-up {
+  animation: count-up 0.6s ease-out;
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.8s ease-out both;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+.animate-shimmer {
+  background: linear-gradient(90deg, transparent 0%, rgba(255,213,79,0.3) 50%, transparent 100%);
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+}

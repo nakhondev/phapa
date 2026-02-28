@@ -1,36 +1,73 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🙏 ระบบบริหารจัดการงานผ้าป่า (Pha Pa Donation Management)
 
-## Getting Started
+ระบบบริหารจัดการงานผ้าป่าออนไลน์ ติดตามยอดบริจาคแบบ **Realtime**
 
-First, run the development server:
+## Tech Stack
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- **Frontend**: Next.js + HeroUI v3 + Tailwind CSS v4
+- **Backend**: Express.js + Supabase (Realtime)
+- **Database**: Supabase (PostgreSQL)
+
+## โครงสร้างโปรเจค
+
+```
+phapa/
+├── frontend/          # Next.js App
+│   ├── src/
+│   │   ├── app/       # Pages (landing, admin)
+│   │   ├── components/# UI Components
+│   │   ├── hooks/     # Realtime hooks
+│   │   └── lib/       # Supabase client, API, types
+│   └── ...
+├── backend/           # Express API Server
+│   ├── src/
+│   │   ├── routes/    # API routes (events, donations)
+│   │   ├── supabaseClient.js
+│   │   └── index.js   # Express server entry
+│   └── supabase/
+│       └── schema.sql # Database schema
+└── README.md
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Setup
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 1. Supabase
+- สร้างโปรเจคที่ [supabase.com](https://supabase.com)
+- รัน SQL จากไฟล์ `backend/supabase/schema.sql` ใน SQL Editor
+- เปิด Realtime ให้ตาราง `donations` และ `events`
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 2. Backend
+```bash
+cd backend
+cp .env.example .env   # แก้ไข env ให้ตรงกับ Supabase
+npm install
+npm run dev             # http://localhost:4000
+```
 
-## Learn More
+### 3. Frontend
+```bash
+cd frontend
+cp .env.example .env.local  # แก้ไข env ให้ตรงกับ Supabase
+npm install
+npm run dev                  # http://localhost:3000
+```
 
-To learn more about Next.js, take a look at the following resources:
+## หน้าเว็บ
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- `/` — รายการงานผ้าป่าทั้งหมด + สร้างงานใหม่
+- `/?event=<id>` — Landing Page แสดงยอดบริจาค Realtime
+- `/admin?event=<id>` — Admin Dashboard จัดการรายการบริจาค
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## API Endpoints
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/events` | รายการงานผ้าป่าทั้งหมด |
+| GET | `/api/events/:id` | ดึงงานผ้าป่าตาม ID |
+| GET | `/api/events/:id/summary` | สรุปยอดบริจาค |
+| POST | `/api/events` | สร้างงานใหม่ |
+| PUT | `/api/events/:id` | อัพเดทงาน |
+| GET | `/api/donations?event_id=xxx` | รายการบริจาค |
+| GET | `/api/donations/recent` | บริจาคล่าสุด |
+| POST | `/api/donations` | เพิ่มรายการบริจาค |
+| DELETE | `/api/donations/:id` | ลบรายการบริจาค |
