@@ -105,7 +105,7 @@ export function LandingPage({ event }: LandingPageProps) {
               )}
               <Chip
                 size="sm"
-                variant="flat"
+                variant="soft"
                 color={event.is_active ? "success" : "default"}
               >
                 <span className="flex items-center gap-1.5">
@@ -258,11 +258,11 @@ export function LandingPage({ event }: LandingPageProps) {
                     </Card.Title>
                     <div className="flex items-center gap-2">
                       {summaryFlash && (
-                        <Chip size="sm" variant="flat" color="success">
+                        <Chip size="sm" variant="soft" color="success">
                           อัพเดท!
                         </Chip>
                       )}
-                      <Chip size="sm" variant="flat" color="success">
+                      <Chip size="sm" variant="soft" color="success">
                         <span className="flex items-center gap-1">
                           <span className="relative flex size-1.5">
                             <span className="absolute inline-flex size-full animate-ping rounded-full bg-green-400 opacity-75" />
@@ -322,7 +322,7 @@ export function LandingPage({ event }: LandingPageProps) {
                   <span className="relative inline-flex size-2.5 rounded-full bg-green-500" />
                 </span>
                 <h2 className="text-base font-bold text-gray-800">รายการล่าสุด</h2>
-                <Chip size="sm" variant="flat" color="success">LIVE</Chip>
+                <Chip size="sm" variant="soft" color="success">LIVE</Chip>
               </div>
               <DonationTicker activities={activities} newActivityId={newActivityId} />
             </div>
@@ -342,7 +342,7 @@ export function LandingPage({ event }: LandingPageProps) {
                         อัพเดทแบบ Realtime
                       </Card.Description>
                     </div>
-                    <Chip size="sm" variant="flat" color="success">
+                    <Chip size="sm" variant="soft" color="success">
                       <span className="flex items-center gap-1.5">
                         <span className="relative flex size-1.5">
                           <span className="absolute inline-flex size-full animate-ping rounded-full bg-green-400 opacity-75" />
