@@ -67,6 +67,8 @@ export const api = {
       method: "PUT",
       body: JSON.stringify(data),
     }),
+  deleteEvent: (id: string) =>
+    fetchJSON<{ message: string }>(`/api/events/${id}`, { method: "DELETE" }),
 
   // Donations
   getDonations: (eventId?: string) =>

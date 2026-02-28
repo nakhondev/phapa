@@ -75,4 +75,15 @@ router.put("/:id", async (req, res) => {
   res.json(data);
 });
 
+// DELETE /api/events/:id — ลบงานผ้าป่า
+router.delete("/:id", async (req, res) => {
+  const { error } = await supabase
+    .from("events")
+    .delete()
+    .eq("id", req.params.id);
+
+  if (error) return res.status(400).json({ error: error.message });
+  res.json({ message: "ลบงานสำเร็จ" });
+});
+
 module.exports = router;

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Button, Card, toast } from "@heroui/react";
+import { Button, Card, AlertDialog, toast } from "@heroui/react";
 import { ClientSpinner } from "./ClientSpinner";
 import {
   Plus,
@@ -10,6 +10,7 @@ import {
   Calendar,
   LocationArrow,
   CircleCheck,
+  TrashBin,
 } from "@gravity-ui/icons";
 import { api } from "@/lib/api";
 import type { Event } from "@/lib/types";
@@ -19,6 +20,7 @@ export function HomePage() {
   const [loading, setLoading] = useState(true);
   const [showCreate, setShowCreate] = useState(false);
   const [creating, setCreating] = useState(false);
+  const [deleting, setDeleting] = useState<string | null>(null);
   const [form, setForm] = useState({
     name: "",
     description: "",
@@ -34,6 +36,20 @@ export function HomePage() {
       .catch(console.error)
       .finally(() => setLoading(false));
   }, []);
+
+  const handleDelete = async (id: string, close: () => void) => {
+    setDeleting(id);
+    try {
+      await api.deleteEvent(id);
+      setEvents((prev) => prev.filter((e) => e.id !== id));
+      close();
+      toast.success("ลบงานสำเร็จ");
+    } catch {
+      toast.danger("ลบงานไม่สำเร็จ");
+    } finally {
+      setDeleting(null);
+    }
+  };
 
   const handleCreate = async () => {
     if (!form.name.trim()) return;
@@ -253,6 +269,43 @@ export function HomePage() {
                 >
                   จัดการ
                 </Link>
+                <AlertDialog>
+                  <AlertDialog.Trigger>
+                    <Button variant="danger" isIconOnly size="sm" className="shrink-0">
+                      <TrashBin className="size-4" />
+                    </Button>
+                  </AlertDialog.Trigger>
+                  <AlertDialog.Backdrop>
+                    <AlertDialog.Container size="sm" placement="center">
+                      <AlertDialog.Dialog>
+                        {({ close }) => (
+                          <>
+                            <AlertDialog.Header>
+                              <AlertDialog.Icon status="danger" />
+                              <AlertDialog.Heading>ลบงานผ้าป่า?</AlertDialog.Heading>
+                            </AlertDialog.Header>
+                            <AlertDialog.Body>
+                              <p className="text-sm text-gray-500">
+                                ต้องการลบ &ldquo;{ev.name}&rdquo; ใช่ไหม?
+                                ข้อมูลทั้งหมดจะถูกลบอย่างถาวร ไม่สามารถกู้คืนได้
+                              </p>
+                            </AlertDialog.Body>
+                            <AlertDialog.Footer>
+                              <Button slot="close" variant="ghost">ยกเลิก</Button>
+                              <Button
+                                variant="danger"
+                                isPending={deleting === ev.id}
+                                onPress={() => handleDelete(ev.id, close)}
+                              >
+                                {deleting === ev.id ? "กำลังลบ..." : "ลบงาน"}
+                              </Button>
+                            </AlertDialog.Footer>
+                          </>
+                        )}
+                      </AlertDialog.Dialog>
+                    </AlertDialog.Container>
+                  </AlertDialog.Backdrop>
+                </AlertDialog>
               </Card.Footer>
             </Card>
           ))}
