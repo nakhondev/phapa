@@ -9,6 +9,8 @@ import {
   NumberField,
   Label,
   Input,
+  AlertDialog,
+  toast,
 } from "@heroui/react";
 import { ClientSpinner } from "../ClientSpinner";
 import { Plus, TrashBin } from "@gravity-ui/icons";
@@ -33,6 +35,7 @@ export function IncomeTab({ eventId, onDataChange }: IncomeTabProps) {
   const [items, setItems] = useState<Income[]>([]);
   const [loading, setLoading] = useState(true);
   const [deleting, setDeleting] = useState<string | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
 
   const [category, setCategory] = useState(INCOME_CATEGORIES[0]);
   const [description, setDescription] = useState("");
@@ -42,7 +45,6 @@ export function IncomeTab({ eventId, onDataChange }: IncomeTabProps) {
   );
   const [receiptNo, setReceiptNo] = useState("");
   const [submitting, setSubmitting] = useState(false);
-  const [error, setError] = useState("");
 
   const fetchItems = useCallback(async () => {
     try {
@@ -65,16 +67,14 @@ export function IncomeTab({ eventId, onDataChange }: IncomeTabProps) {
     setAmount(0);
     setReceivedDate(new Date().toISOString().split("T")[0]);
     setReceiptNo("");
-    setError("");
   };
 
   const handleSubmit = async (close: () => void) => {
     if (!category || amount <= 0) {
-      setError("กรุณากรอกหมวดหมู่และจำนวนเงิน");
+      toast.warning("กรุณากรอกหมวดหมู่และจำนวนเงิน");
       return;
     }
     setSubmitting(true);
-    setError("");
     try {
       await api.createIncome({
         event_id: eventId,
@@ -89,24 +89,28 @@ export function IncomeTab({ eventId, onDataChange }: IncomeTabProps) {
       fetchItems();
       onDataChange();
       close();
+      toast.success("บันทึกรายรับสำเร็จ");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "เกิดข้อผิดพลาด");
+      toast.danger(err instanceof Error ? err.message : "เกิดข้อผิดพลาด");
     } finally {
       setSubmitting(false);
     }
   };
 
-  const handleDelete = async (id: string) => {
-    if (!confirm("ต้องการลบรายการนี้?")) return;
-    setDeleting(id);
+  const confirmDelete = async (close: () => void) => {
+    if (!deleteTarget) return;
+    setDeleting(deleteTarget);
     try {
-      await api.deleteIncome(id);
+      await api.deleteIncome(deleteTarget);
       fetchItems();
       onDataChange();
+      toast.success("ลบรายการสำเร็จ");
+      close();
     } catch {
-      /* ignore */
+      toast.danger("ลบรายการไม่สำเร็จ");
     } finally {
       setDeleting(null);
+      setDeleteTarget(null);
     }
   };
 
@@ -151,11 +155,6 @@ export function IncomeTab({ eventId, onDataChange }: IncomeTabProps) {
                     </Modal.Header>
                     <Modal.Body>
                       <div className="space-y-4">
-                        {error && (
-                          <div className="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-600">
-                            {error}
-                          </div>
-                        )}
                         <div>
                           <p className="mb-2 text-sm font-medium text-gray-700">หมวดหมู่</p>
                           <div className="flex flex-wrap gap-2">
@@ -266,7 +265,7 @@ export function IncomeTab({ eventId, onDataChange }: IncomeTabProps) {
                         <Button
                           isIconOnly variant="ghost" size="sm"
                           isPending={deleting === item.id}
-                          onPress={() => handleDelete(item.id)}
+                          onPress={() => setDeleteTarget(item.id)}
                         >
                           <TrashBin className="size-4 text-red-500" />
                         </Button>
@@ -286,6 +285,29 @@ export function IncomeTab({ eventId, onDataChange }: IncomeTabProps) {
           </Card.Content>
         </Card>
       )}
+      <AlertDialog isOpen={deleteTarget !== null} onOpenChange={(open) => { if (!open) setDeleteTarget(null); }}>
+        <AlertDialog.Backdrop>
+          <AlertDialog.Container size="sm" placement="center">
+            <AlertDialog.Dialog>
+              {({ close }) => (
+                <>
+                  <AlertDialog.Header>
+                    <AlertDialog.Icon status="danger" />
+                    <AlertDialog.Heading>ลบรายรับ?</AlertDialog.Heading>
+                  </AlertDialog.Header>
+                  <AlertDialog.Body>
+                    <p className="text-sm text-gray-500">ต้องการลบรายการนี้ใช่ไหม? ไม่สามารถกู้คืนได้</p>
+                  </AlertDialog.Body>
+                  <AlertDialog.Footer>
+                    <Button slot="close" variant="ghost">ยกเลิก</Button>
+                    <Button variant="danger" isPending={deleting !== null} onPress={() => confirmDelete(close)}>ลบ</Button>
+                  </AlertDialog.Footer>
+                </>
+              )}
+            </AlertDialog.Dialog>
+          </AlertDialog.Container>
+        </AlertDialog.Backdrop>
+      </AlertDialog>
     </div>
   );
 }

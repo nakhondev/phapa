@@ -20,7 +20,7 @@ router.get("/", async (req, res) => {
 
 // POST /api/income
 router.post("/", async (req, res) => {
-  const { event_id, category, description, amount, received_date, receipt_no } = req.body;
+  const { event_id, category, description, amount, received_date, receipt_no, processed_by } = req.body;
 
   if (!event_id || !category || !amount) {
     return res.status(400).json({ error: "event_id, category, amount are required" });
@@ -28,7 +28,7 @@ router.post("/", async (req, res) => {
 
   const { data, error } = await supabase
     .from("income")
-    .insert([{ event_id, category, description, amount, received_date, receipt_no }])
+    .insert([{ event_id, category, description, amount, received_date, receipt_no, processed_by: processed_by || null }])
     .select()
     .single();
 

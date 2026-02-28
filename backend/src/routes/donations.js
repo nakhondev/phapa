@@ -38,7 +38,7 @@ router.get("/recent", async (req, res) => {
 
 // POST /api/donations — เพิ่มรายการบริจาค
 router.post("/", async (req, res) => {
-  const { event_id, donor_name, donor_phone, amount, note, donation_type, is_anonymous } =
+  const { event_id, donor_name, donor_phone, amount, note, donation_type, is_anonymous, processed_by } =
     req.body;
 
   if (!event_id || !donor_name || !amount) {
@@ -56,6 +56,7 @@ router.post("/", async (req, res) => {
         note,
         donation_type: donation_type || "cash",
         is_anonymous: is_anonymous || false,
+        processed_by: processed_by || null,
       },
     ])
     .select()
